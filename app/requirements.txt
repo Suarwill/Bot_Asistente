@@ -1,0 +1,2 @@
+python-dotenv
+Flask # Opcional, para un futuro webhook. Por ahora, simularemos la entrada.

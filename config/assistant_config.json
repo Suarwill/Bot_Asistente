@@ -1,0 +1,22 @@
+{
+  "ASSISTANT_NAME": "Asistente Comercial Krisis",
+  "WELCOME_MESSAGE": "¡Hola! Soy el Asistente Comercial Krisis. ¿En qué puedo ayudarte hoy?\n\nPor favor, elige una opción o escribe tu consulta:\n1. Información de productos\n2. Consulta de ventas\n3. Soporte técnico\n4. Hablar con un agente",
+  "CONVERSATION_FLOW": {
+    "1": {
+      "response": "Claro, ¿qué tipo de producto te interesa? Por ejemplo: 'software', 'hardware', 'servicios'.",
+      "next_step": "product_info"
+    },
+    "2": {
+      "response": "Para consultas de ventas, por favor, indícame tu nombre y número de contacto para que un asesor se comunique contigo.",
+      "next_step": "sales_inquiry"
+    },
+    "3": {
+      "response": "Nuestro equipo de soporte está disponible de lunes a viernes de 9:00 a 18:00. Por favor, describe tu problema y te asignaremos un técnico.",
+      "next_step": "support_inquiry"
+    },
+    "4": {
+      "response": "Conectándote con un agente... Por favor, espera un momento.",
+      "next_step": "agent_transfer"
+    }
+  }
+}
