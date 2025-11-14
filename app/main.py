@@ -35,9 +35,6 @@ except Exception as e:
 
 @app.route('/webhook', methods=['POST'])
 def whatsapp_webhook():
-    """
-    Endpoint para recibir mensajes entrantes de la API de WhatsApp (Twilio).
-    """
     try:
         # La estructura del body depende del proveedor. Esto es para Twilio.
         incoming_msg = request.values.get('Body', '').strip()

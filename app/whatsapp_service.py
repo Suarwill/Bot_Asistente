@@ -4,17 +4,7 @@ from twilio.rest import Client
 logger = logging.getLogger("BotAsistente")
 
 class WhatsAppService:
-    """
-    Clase de servicio para enviar mensajes de WhatsApp a través de la API de Twilio.
-    """
-
     def __init__(self, account_sid: str, auth_token: str, twilio_number: str):
-        """
-        Inicializa el cliente de Twilio.
-        :param account_sid: El SID de la cuenta de Twilio.
-        :param auth_token: El token de autenticación de Twilio.
-        :param twilio_number: El número de WhatsApp de Twilio (ej. 'whatsapp:+14155238886').
-        """
         try:
             self.client = Client(account_sid, auth_token)
             self.twilio_number = twilio_number

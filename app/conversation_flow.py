@@ -8,10 +8,6 @@ logger = logging.getLogger("BotAsistente")
 user_states = {}
 
 def handle_message(sender_id: str, message_text: str) -> str:
-    """
-    Procesa un mensaje entrante y genera una respuesta basada en el flujo conversacional.
-    Gestiona el estado de la conversación para cada usuario.
-    """
     message_text = message_text.strip().lower()
     current_state = user_states.get(sender_id)
     

@@ -3,10 +3,6 @@ import os
 from logging.handlers import RotatingFileHandler
 
 def setup_logging():
-    """
-    Configura el sistema de logging para la aplicación.
-    Los logs se escribirán en la consola, en un archivo general y en un archivo de errores.
-    """
     log_dir = "logs"
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
