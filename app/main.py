@@ -4,29 +4,60 @@ import os
 # Añadir el directorio 'app' al PYTHONPATH para que las importaciones relativas funcionen
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from Bot_Asistente.app.logging_config import setup_logging
-from Bot_Asistente.app.config import config
+from flask import Flask, request, jsonify
+
+from logging_config import setup_logging
+from config import config
 from whatsapp_service import WhatsAppService
 from conversation_flow import handle_message
 
-if __name__ == "__main__":
-    logger = setup_logging()
-    logger.info("Iniciando Bot Asistente...")
+# --- Inicialización de la Aplicación ---
 
-    # 2. Cargar configuración
+# 1. Inicializar Flask
+app = Flask(__name__)
+
+# 2. Configurar el logging
+logger = setup_logging()
+
+# 3. Cargar configuración e inicializar servicios
+try:
+    logger.info(f"Cargando configuración para el asistente: {config.ASSISTANT_NAME}")
+    whatsapp_service = WhatsAppService(
+        account_sid=config.TWILIO_ACCOUNT_SID,
+        auth_token=config.TWILIO_AUTH_TOKEN,
+        twilio_number=config.TWILIO_WHATSAPP_NUMBER
+    )
+except Exception as e:
+    logger.error(f"Error fatal al inicializar la aplicación: {e}", exc_info=True)
+    sys.exit(1)
+
+# --- Endpoints de la API ---
+
+@app.route('/webhook', methods=['POST'])
+def whatsapp_webhook():
+    """
+    Endpoint para recibir mensajes entrantes de la API de WhatsApp (Twilio).
+    """
     try:
-        logger.info(f"Cargando configuración para el asistente: {config.ASSISTANT_NAME}")
-        whatsapp_api_key = config.WHATSAPP_API_KEY
+        # La estructura del body depende del proveedor. Esto es para Twilio.
+        incoming_msg = request.values.get('Body', '').strip()
+        sender_id = request.values.get('From', '')  # ej: 'whatsapp:+5491155554444'
+        
+        logger.info(f"Mensaje recibido de {sender_id}: '{incoming_msg}'")
+
+        if not incoming_msg or not sender_id:
+            logger.warning("Webhook recibido sin cuerpo de mensaje o sin remitente.")
+            return jsonify({"status": "error", "message": "Missing Body or From field"}), 400
+
+        response_text = handle_message(sender_id, incoming_msg)
+        whatsapp_service.send_message(sender_id, response_text)
+
+        return jsonify({"status": "ok"}), 200
     except Exception as e:
-        logger.error(f"Error al cargar la configuración: {e}")
-        sys.exit(1)
+        logger.error(f"Error procesando el webhook: {e}", exc_info=True)
+        return jsonify({"status": "error", "message": "Internal Server Error"}), 500
 
-    # 3. Inicializar el servicio de WhatsApp (simulado)
-    whatsapp_service = WhatsAppService(whatsapp_api_key)
-
-    # 4. Simular un mensaje entrante y procesarlo
-    simulated_message = input("Escribe un mensaje para el bot (ej. 'hola', '1', 'consulta de ventas'): ")
-    response = handle_message(simulated_message)
-    whatsapp_service.send_message("user_phone_number", response) # 'user_phone_number' sería el número real del usuario
-
-    logger.info("Bot Asistente finalizado (simulación de un solo mensaje).")
+if __name__ == "__main__":
+    logger.info("Iniciando Bot Asistente con servidor Flask...")
+    # El host '0.0.0.0' es crucial para que Flask sea accesible desde fuera del contenedor Docker.
+    app.run(host='0.0.0.0', port=5000, debug=False)

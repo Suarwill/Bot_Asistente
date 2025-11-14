@@ -7,8 +7,11 @@ def create_env_if_not_exists():
     if not os.path.exists(env_path):
         print(f"Archivo '{env_path}' no encontrado. Creando uno con valores por defecto.")
         with open(env_path, 'w', encoding='utf-8') as f:
-            f.write("# Clave de API para el servicio de WhatsApp (puede ser un valor de prueba)\n")
-            f.write("WHATSAPP_API_KEY=YOUR_MOCK_WHATSAPP_API_KEY\n")
+            f.write("# Credenciales del proveedor de WhatsApp (ej. Twilio)\n")
+            f.write("TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n")
+            f.write("TWILIO_AUTH_TOKEN=your_auth_token\n")
+            f.write("TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886\n")
+
 
 create_env_if_not_exists()
 
@@ -30,8 +33,10 @@ class Config:
         self.ASSISTANT_NAME = self.data.get("ASSISTANT_NAME", "Asistente Genérico")
         self.WELCOME_MESSAGE = self.data.get("WELCOME_MESSAGE", "Bienvenido.")
         self.CONVERSATION_FLOW = self.data.get("CONVERSATION_FLOW", {})
-
-        self.WHATSAPP_API_KEY = os.getenv("WHATSAPP_API_KEY")
+        # Cargar credenciales de Twilio desde variables de entorno
+        self.TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+        self.TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+        self.TWILIO_WHATSAPP_NUMBER = os.getenv("TWILIO_WHATSAPP_NUMBER")
         
 
 # Instancia global de configuración

@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  whatsapp_bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: krisis_whatsapp_bot
+    ports:
+      # Mapea el puerto 5000 del host al puerto 5000 del contenedor, donde corre Flask.
+      - "5000:5000"
+    volumes:
+      # Montar el directorio de configuración para que el bot pueda leer assistant_config.json
+      - ./config:/app/config
+      # Montar un volumen para los logs generados por la aplicación
+      - bot_logs:/app/logs
+    env_file:
+      # Carga las variables de entorno (credenciales) desde el archivo .env
+      - ./app/.env
+    environment:
+      - ASSISTANT_CONFIG_PATH=/app/config/assistant_config.json
+
+volumes:
+  bot_logs:
+    driver: local
