@@ -9,7 +9,7 @@ def create_env_if_not_exists():
         with open(env_path, 'w', encoding='utf-8') as f:
             f.write("# Credenciales del proveedor de WhatsApp (ej. Twilio)\n")
             f.write("TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n")
-            f.write("TWILIO_AUTH_TOKEN=your_auth_token\n")
+            f.write("TWILIO_AUTH_TOKEN=insertar_token\n")
             f.write("TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886\n")
 
 
